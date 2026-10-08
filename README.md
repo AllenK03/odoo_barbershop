@@ -51,7 +51,7 @@ Git
 Clone the repository:
 
 Bash
-git clone [https://github.com/giordanocarmine/odoo_barbershop.git](https://github.com/giordanocarmine/odoo_barbershop.git)
+git clone [https://github.com/AllenK03/odoo_barbershop.git](https://github.com/AllenK03/odoo_barbershop.git)
 cd odoo_barbershop
 Start services with Docker Compose:
 
