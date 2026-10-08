@@ -1,0 +1,13 @@
+cat << 'EOF' > .gitignore
+# Python
+__pycache__/
+*.py[cod]
+
+# Docker / Datos locales de PostgreSQL
+postgresql_data/
+*.log
+
+# Entorno y Configuración local
+.env
+.vscode/
+EOF

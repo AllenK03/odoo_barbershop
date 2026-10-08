@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú Raíz -->
+    <menuitem id="menu_barber_shop_root"
+        name="Barbería"
+        sequence="10" />
+
+    <!-- Submenú Citas -->
+    <menuitem id="menu_barber_appointments"
+        name="Citas"
+        parent="menu_barber_shop_root"
+        sequence="10" />
+
+    <!-- Acción Citas -->
+    <menuitem id="menu_barber_appointment_action"
+        name="Todas las Citas"
+        parent="menu_barber_appointments"
+        action="action_barber_appointment"
+        sequence="10" />
+
+    <!-- Submenú Configuración -->
+    <menuitem id="menu_barber_config"
+        name="Configuración"
+        parent="menu_barber_shop_root"
+        sequence="100" />
+
+    <!-- Opciones de Configuración -->
+    <menuitem id="menu_barber_barber_action"
+        name="Barberos / Estilistas"
+        parent="menu_barber_config"
+        action="action_barber_barber"
+        sequence="10" />
+
+    <menuitem id="menu_barber_service_action"
+        name="Servicios"
+        parent="menu_barber_config"
+        action="action_barber_service"
+        sequence="20" />
+</odoo>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Registro de la acción de reporte QWeb PDF -->
+    <record id="action_report_barber_appointment_ticket" model="ir.actions.report">
+        <field name="name">Ticket de Cita / Consumo</field>
+        <field name="model">barber.appointment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">barber_shop.report_appointment_ticket</field>
+        <field name="report_file">barber_shop.report_appointment_ticket</field>
+        <field name="binding_model_id" ref="model_barber_appointment" />
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Plantilla QWeb del Ticket -->
+    <template id="report_appointment_ticket">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: Arial, sans-serif; font-size: 13px;">
+                        <!-- Encabezado del Ticket -->
+                        <div class="text-center mb-3">
+                            <h2 style="font-weight: bold; margin-bottom: 2px;">TICKET DE ATENCIÓN</h2>
+                            <h4 style="color: #555;">
+                                <span t-field="doc.name" />
+                            </h4>
+                        </div>
+
+                        <!-- Datos del Cliente y Atención -->
+                        <table class="table table-sm table-borderless mb-3">
+                            <tr>
+                                <td>
+                                    <strong>Cliente:</strong>
+                                    <span t-field="doc.customer_id.name" />
+                                </td>
+                                <td>
+                                    <strong>Fecha:</strong>
+                                    <span t-field="doc.date_start" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Barbero / Estilista:</strong>
+                                    <span t-field="doc.barber_id.name" />
+                                </td>
+                                <td>
+                                    <strong>Estado:</strong>
+                                    <span t-field="doc.state" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Sección de Servicios -->
+                        <t t-if="doc.service_ids">
+                            <h5 style="border-bottom: 2px solid #333; padding-bottom: 4px;"
+                                class="mt-3">Servicios Realizados</h5>
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Servicio</th>
+                                        <th class="text-center">Duración</th>
+                                        <th class="text-end">Precio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.service_ids" t-as="s">
+                                        <td>
+                                            <span t-field="s.name" />
+                                        </td>
+                                        <td class="text-center"><span t-field="s.duration" /> min</td>
+                                        <td class="text-end">
+                                            <span t-field="s.price"
+                                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}' />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- Sección de Productos Retail -->
+                        <t t-if="doc.product_line_ids">
+                            <h5 style="border-bottom: 2px solid #333; padding-bottom: 4px;"
+                                class="mt-3">Productos Adquiridos</h5>
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th class="text-center">Cant.</th>
+                                        <th class="text-end">P. Unit.</th>
+                                        <th class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.product_line_ids" t-as="p">
+                                        <td>
+                                            <span t-field="p.product_id.name" />
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="p.qty" />
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="p.price_unit"
+                                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}' />
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="p.subtotal"
+                                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}' />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- Totales Financieros -->
+                        <div class="row justify-content-end mt-4">
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tr border-top="true">
+                                        <td>Subtotal Servicios:</td>
+                                        <td class="text-end">
+                                            <span t-field="doc.total_services"
+                                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}' />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Subtotal Productos:</td>
+                                        <td class="text-end">
+                                            <span t-field="doc.total_products"
+                                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}' />
+                                        </td>
+                                    </tr>
+                                    <tr
+                                        style="font-size: 15px; font-weight: bold; border-top: 2px solid #000;">
+                                        <td>TOTAL A PAGAR:</td>
+                                        <td class="text-end">
+                                            <span t-field="doc.total_amount"
+                                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}' />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Pie del Ticket -->
+                        <div class="text-center mt-5" style="font-size: 11px; color: #777;">
+                            <p>¡Gracias por su visita!</p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista / Tree -->
+    <record id="view_barber_barber_tree" model="ir.ui.view">
+        <field name="name">barber.barber.tree</field>
+        <field name="model">barber.barber</field>
+        <field name="arch" type="xml">
+            <tree string="Barberos">
+                <field name="name" />
+                <field name="identification_id" />
+                <field name="phone" />
+                <field name="email" />
+                <field name="service_commission_rate" />
+                <field name="product_commission_rate" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_barber_barber_form" model="ir.ui.view">
+        <field name="name">barber.barber.form</field>
+        <field name="model">barber.barber</field>
+        <field name="arch" type="xml">
+            <form string="Barbero / Estilista">
+                <sheet>
+                    <group>
+                        <group string="Datos Personales">
+                            <field name="name" />
+                            <field name="identification_id" />
+                            <field name="user_id" />
+                            <field name="phone" />
+                            <field name="email" />
+                            <field name="active" />
+                        </group>
+                        <group string="Esquema de Comisiones (%)">
+                            <field name="service_commission_rate" />
+                            <field name="product_commission_rate" />
+                            <field name="color" widget="color" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción de Ventana -->
+    <record id="action_barber_barber" model="ir.actions.act_window">
+        <field name="name">Barberos y Estilistas</field>
+        <field name="res_model">barber.barber</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

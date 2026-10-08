@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista / Tree -->
+    <record id="view_barber_appointment_tree" model="ir.ui.view">
+        <field name="name">barber.appointment.tree</field>
+        <field name="model">barber.appointment</field>
+        <field name="arch" type="xml">
+            <tree string="Citas" decoration-info="state == 'confirmed'"
+                decoration-warning="state == 'in_progress'" decoration-success="state == 'done'"
+                decoration-muted="state == 'cancel'">
+                <field name="name" />
+                <field name="customer_id" />
+                <field name="barber_id" />
+                <field name="date_start" />
+                <field name="total_amount" widget="monetary" />
+                <field name="barber_commission" widget="monetary" />
+                <field name="shop_profit" widget="monetary" />
+                <field name="state" widget="badge" decoration-info="state == 'confirmed'"
+                    decoration-warning="state == 'in_progress'" decoration-success="state == 'done'"
+                    decoration-muted="state == 'cancel'" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_barber_appointment_form" model="ir.ui.view">
+        <field name="name">barber.appointment.form</field>
+        <field name="model">barber.appointment</field>
+        <field name="arch" type="xml">
+            <form string="Cita de Barbería">
+                <header>
+                    <button name="action_confirm" string="Confirmar" type="object"
+                        class="oe_highlight" invisible="state != 'draft'" />
+                    <button name="action_start" string="Iniciar Atención" type="object"
+                        class="oe_highlight" invisible="state != 'confirmed'" />
+                    <button name="action_done" string="Finalizar Cita" type="object"
+                        class="oe_highlight" invisible="state != 'in_progress'" />
+                    <button name="action_create_invoice" string="Generar Factura" type="object"
+                        class="oe_highlight" invisible="state != 'done' or invoice_id" />
+                    <button name="action_cancel" string="Cancelar Cita" type="object"
+                        invisible="state in ('done', 'cancel')" />
+                    <button name="action_draft" string="Volver a Borrador" type="object"
+                        invisible="state != 'cancel'" />
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,confirmed,in_progress,done" />
+                </header>
+                <sheet>
+                    <!-- Smart Buttons Box -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_picking" type="object" class="oe_stat_button"
+                            icon="fa-truck" invisible="not picking_id">
+                            <field name="picking_id" widget="statinfo" string="Almacén" />
+                        </button>
+                        <button name="action_view_invoice" type="object" class="oe_stat_button"
+                            icon="fa-pencil-square-o" invisible="not invoice_id">
+                            <field name="invoice_id" widget="statinfo" string="Factura" />
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Detalles de la Cita">
+                            <field name="customer_id" />
+                            <field name="barber_id" />
+                        </group>
+                        <group string="Programación">
+                            <field name="date_start" />
+                            <field name="date_end" />
+                            <field name="currency_id" invisible="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Servicios" name="services">
+                            <field name="service_ids" widget="many2many_tags" />
+                        </page>
+                        <page string="Productos Retail" name="products">
+                            <field name="product_line_ids">
+                                <tree editable="bottom">
+                                    <field name="currency_id" column_invisible="True" />
+                                    <field name="product_id" />
+                                    <field name="qty" />
+                                    <field name="price_unit" widget="monetary" />
+                                    <field name="subtotal" widget="monetary" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Resumen Financiero" name="financial_summary">
+                            <group col="2">
+                                <group string="Ingresos">
+                                    <field name="total_services" widget="monetary" />
+                                    <field name="total_products" widget="monetary" />
+                                    <field name="total_amount" widget="monetary"
+                                        class="oe_subtotal_footer_separator" />
+                                </group>
+                                <group string="Distribución / Comisiones">
+                                    <field name="barber_commission" widget="monetary" />
+                                    <field name="shop_profit" widget="monetary" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Kanban -->
+    <record id="view_barber_appointment_kanban" model="ir.ui.view">
+        <field name="name">barber.appointment.kanban</field>
+        <field name="model">barber.appointment</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name" />
+                <field name="customer_id" />
+                <field name="barber_id" />
+                <field name="total_amount" />
+                <field name="state" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div>
+                                    <strong>
+                                        <field name="name" />
+                                    </strong>
+                                </div>
+                                <div>
+                                    <span>Cliente: <field name="customer_id" /></span>
+                                </div>
+                                <div>
+                                    <span>Barbero: <field name="barber_id" /></span>
+                                </div>
+                                <div class="text-end fw-bold">
+                                    <field name="total_amount" widget="monetary" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Calendario -->
+    <record id="view_barber_appointment_calendar" model="ir.ui.view">
+        <field name="name">barber.appointment.calendar</field>
+        <field name="model">barber.appointment</field>
+        <field name="arch" type="xml">
+            <calendar string="Agenda de Citas" date_start="date_start" date_stop="date_end"
+                color="barber_id" mode="week">
+                <field name="name" />
+                <field name="customer_id" />
+                <field name="barber_id" />
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Acción de Ventana -->
+    <record id="action_barber_appointment" model="ir.actions.act_window">
+        <field name="name">Citas de Barbería</field>
+        <field name="res_model">barber.appointment</field>
+        <field name="view_mode">kanban,calendar,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Registra tu primera cita de barbería!
+            </p>
+        </field>
+    </record>
+</odoo>
